@@ -18,26 +18,38 @@ int main(int argc, char** argv)
 	int total = 0;
 	for (int i = 1; i < argc; i++)
 		total += atoi(argv[i]);
-	fprintf(stdout, "Tickets made: %d\nTotal tickets: %d\n", total, total+pinfo.total_tickets);
-
+	fprintf(stdout, "Children made: %d\nTotal tickets: %d\n", total, total+pinfo.total_tickets);
+	fprintf(stdout, "Processes:\n");
+	fprintf(stdout, "-------------\n");
 	for (int i=1;i<argc;i++) {
 		const int pid = fork();
 
+
 		if (pid<0) {
-			fprintf(stderr, "Failed to create child."); 
+			fprintf(stdout, "Failed to create child."); 
 			exit();
 		}
 		if (!pid) {
 			const int t = atoi(argv[i]);//number of tickets
+		
 			settickets(t);
-			fprintf(stdout, "Child %d created with %d tickets\n", getpid(), t);
-			fprintf(stdout, "Child %d exiting\n", getpid());
+			const int ticket_10=t*10; //tickets*10
+
+			const int stride = 1000/ticket_10;
+
+			fprintf(stdout, "Child pid:%d created with %d tickets\n", getpid(), ticket_10);
+			fprintf(stdout, "Stride %d\n", stride);
+			//fprintf(stdout, "Child %d exiting\n", getpid());
+			fprintf(stdout, "Pass 1\n");
 			exit();
 		}
 	}
+
 	for (int i=1; i<argc; i++) {
 		wait();
 	}
+
 	fprintf(stdout, "Parent exiting\n");
 	exit();
 }
+

@@ -55,20 +55,22 @@ void restoretickets(struct proc* pp)
 static struct proc*
 allocproc(void)
 {
-	struct proc *p;
-	char *sp;
+  struct proc *p;
+  char *sp;
 
-	acquire(&ptable.lock);
-	for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-		if(p->state == UNUSED)
-			goto found;
-	release(&ptable.lock);
-	return 0;
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->state == UNUSED)
+      goto found;
+  release(&ptable.lock);
+  return 0;
 
 found:
-	p->state = EMBRYO;
-	p->pid = nextpid++;
-	release(&ptable.lock);
+  p->state = EMBRYO;
+  p->pid = nextpid++;
+  release(&ptable.lock);
+
+
 
 	// Allocate kernel stack if possible.
 	if((p->kstack = kalloc()) == 0){
@@ -291,7 +293,7 @@ scheduler(void)
 
 	// Set init's tickets to 1
 	acquire(&ptable.lock);
-	setproctickets(ptable.proc, 1);
+	setproctickets(ptable.proc, 10);
 	release(&ptable.lock);
 
 	// Seed random
